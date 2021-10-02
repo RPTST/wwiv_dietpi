@@ -200,6 +200,22 @@ Open a browser and go to http://<IP_ADDRESS>:8888
     sudo systemctl restart systemd-binfmt
   
 
+#    Install Telet
+
+    sudo apt install telnet telnetd
+    sudo nano /etc/services
+
+Change the following lines for telnet access
+
+    #telnet         23/tcp
+    telnet         2323/tcp
+
+Restart
+
+    sudo reboot
+    
+
+
 #    Install WWIV on linux
   
     mkdir ~/git/ 
@@ -208,6 +224,7 @@ Open a browser and go to http://<IP_ADDRESS>:8888
 
 
 #    Build from source
+
     git clone --recurse-submodules -j8 https://github.com/wwivbbs/wwiv.git
     cd wwiv/
     wget https://github.com/wwivbbs/wwiv/releases/download/wwiv_5.7.1/wwiv-linux-arm64-raspbian-5.7.1.3532.tar.gz
@@ -219,7 +236,8 @@ Open a browser and go to http://<IP_ADDRESS>:8888
     mv README.md readme1st.txt
 
     
-#   Moving the build from building directory to working directory
+Moving the build from building directory to working directory
+
     mv ~/git/wwiv/* /opt/wwiv/
     
 Or, copy all of the files newly built, or symlinks to them from your WWIV base install i.e. in /opt/wwiv/ (assuming the source is in $HOME/git/wwiv) now
@@ -239,15 +257,55 @@ You must run this as root. The script performs the following tasks for you: crea
     sudo ./install.sh -n
     sudo ./install.sh
    
+If you have any issues, check the install_date_time.log file that was created during the install.  If you still can't tell what happened, come and find us in IRC or post a message in one of the wwiv support subs.
+
+#    After the install
+
 Now, you may log into the new wwiv user (e.g, sudo -u wwiv -s) and run ./wwivconfig to configure the BBS. (If that first sudo command doesn't work on your system, try sudo su - wwiv -s /bin/bash)
   
     sudo -u wwiv -s
+    ./wwivconfig
  
-If you have any issues, check the install_date_time.log file that was created during the install.  If you still can't tell what happened, come and find us in IRC or post a message in one of the wwiv support subs.
+Once in the menu answer the initial question to setup the general BBS operations.
 
+Go to option W (wwivd Configuration)
+
+    Telnet Port: (Change to 2323)
+    SSH port: (Change -1)
   
-#    After the install
+Add your user to the WWIV group:
+
+    sudo usermod -a -G wwiv $USER
     
+To ensure everything is owned properly to start: 
+
+    sudo chown -R wwiv:wwiv /opt/wwiv
+
+Set the permission for the main folder:
+
+    sudo chmod 2775 /opt/wwi
+
+The chmod values are: 2=set group id, 7=rwx for owner (wwiv), 7=rwx for group (wwiv), 5=rx for world. Setting group ID (SETGID) bit (2) causes the group (wwiv) to be copied to all new files/folders created in that folder.
+
+Use find to do the same process for all subdirectories: 
+
+    sudo find /opt/wwiv -type d -exec chmod 2775 {} +
+
+Make sure all other files are read/write for group: 
+
+    sudo find /opt/wwiv -type f -perm 664 -exec chmod 0664 {} +
+    sudo find /opt/wwiv -type f -perm 644 -exec chmod 0664 {} + 
+    sudo find /opt/wwiv -type f -perm 646 -exec chmod 0664 {} +
+    sudo find /opt/wwiv -type f -perm 666 -exec chmod 0664 {} +
+
+Change the umask for your users to 0002 by adding this line to the bottom of /etc/profile
+
+    umask 0002
+
+Now reboot the system:
+
+    sudo reboot
+
 If you've gotten this far, Your BBS should be up and running. Everything below this point is details about more in-depth configuration (DOORs, WWIVnet, etc) and some of the current warts that linux has that you need to be aware of. If you come across anything that is not detailed here, please let us know.
 
     http://docs.wwivbbs.org/en/latest/chains/tradewars2002/
