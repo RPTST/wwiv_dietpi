@@ -300,7 +300,7 @@ cd /opt/wwiv
 
 ln -s $HOME/git/wwiv/builds/tools/linux/use-built-bin.sh
 
-export BUILT_BIN=$HOME/out/wwiv
+export BUILT_BIN=$HOME/out/wwiv/_build/
   
 ./use-built-bin.sh ${BUILT_BIN} ~/git/wwiv/_build/bbs/bbs ~/git/wwiv/_build/wwivd/wwivd ~/git/wwiv/_build/wwivconfig/wwivconfig ~/git/wwiv/_build/wwivfsed/wwivfsed ~/git/wwiv/_build/wwivutil/wwivutil ~/git/wwiv/_build/network/network ~/git/wwiv/_build/network1/network1 ~/git/wwiv/_build/network2/network2 ~/git/wwiv/_build/network3/network3 ~/git/wwiv/_build/networkb/networkb ~/git/wwiv/_build/networkc/networkc ~/git/wwiv/_build/networkf/networkf ~/git/wwiv/_build/networkt/networkt
 
